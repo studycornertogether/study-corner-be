@@ -21,5 +21,10 @@ export class GoogleAuthenticationController {
   async authenticate(
     @Body() tokenData: TokenVerificationDto,
     @Req() request: Request,
-  ) {}
+  ) {
+    const { accessTokenCookie, user } =
+      await this.googleAuthenticationService.authenticate(tokenData.token);
+    request.res.setHeader('Set-Cookie', accessTokenCookie);
+    return user;
+  }
 }

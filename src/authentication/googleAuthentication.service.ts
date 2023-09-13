@@ -18,4 +18,56 @@ export class GoogleAuthenticationService {
 
     this.oauthClient = new google.auth.OAuth2(clientID, clientSecret);
   }
+
+  async authenticate(token: string) {
+    const tokenInfo = await this.oauthClient.getTokenInfo(token);
+    const email = tokenInfo.email;
+
+    try {
+      return await this.registerUser(token, email);
+    } catch (error) {
+      if (error.status !== 404) {
+        throw new error();
+      }
+    }
+  }
+
+  async registerUser(token: string, email: string) {
+    const userData = await this.getUserData(token);
+    const name = userData.name;
+    let user = await this.usersService.getByEmail(email);
+    if (!user) {
+      user = await this.usersService.createWithGoogle(email, name);
+    }
+
+    const { accessTokenCookie } = await this.getCookiesForUser(user);
+    return {
+      accessTokenCookie,
+      user,
+    };
+  }
+
+  async getUserData(token: string) {
+    const userInfoClient = google.oauth2('v2').userinfo;
+
+    this.oauthClient.setCredentials({
+      access_token: token,
+    });
+
+    const userInfoResponse = await userInfoClient.get({
+      auth: this.oauthClient,
+    });
+
+    return userInfoResponse.data;
+  }
+
+  async getCookiesForUser(user: User) {
+    const accessTokenCookie = this.authenticationService.getCookieWithJwtToken(
+      user.email,
+    );
+
+    return {
+      accessTokenCookie,
+    };
+  }
 }
