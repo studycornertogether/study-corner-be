@@ -4,6 +4,9 @@ import { UsersModule } from 'src/users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
+import { GoogleAuthenticationService } from './googleAuthentication.service';
+import { GoogleAuthenticationController } from './googleAuthentication.controller';
+import { AuthenticationController } from './authentication.controller';
 
 @Module({
   imports: [
@@ -20,6 +23,7 @@ import { JwtStrategy } from './jwt.strategy';
       }),
     }),
   ],
-  providers: [AuthenticationService, JwtStrategy],
+  providers: [AuthenticationService, JwtStrategy, GoogleAuthenticationService],
+  controllers: [GoogleAuthenticationController, AuthenticationController],
 })
 export class AuthenticationModule {}

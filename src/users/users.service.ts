@@ -10,13 +10,13 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async getByUuid(uuid: string) {
-    const user = await this.usersRepository.findOne({ where: { uuid } });
+  async getByEmail(email: string) {
+    const user = await this.usersRepository.findOne({ where: { email } });
     if (user) {
       return user;
     }
     throw new HttpException(
-      'User with this id does not exist',
+      'User with this email does not exist',
       HttpStatus.NOT_FOUND,
     );
   }

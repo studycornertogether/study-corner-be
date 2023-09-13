@@ -7,36 +7,32 @@ import { TokenPayload } from './token-payload.interface';
 @Injectable()
 export class AuthenticationService {
   constructor(
-    private readonly userService: UsersService,
+    private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
 
-  async register() {
+  public async getAuthenticatedUser(email: string, hashedPassword: string) {
     try {
+      const user = await this.usersService.getByEmail(email);
+      return user;
     } catch (error) {
-      if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new HttpException(
-          'User with that email already exists',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
       throw new HttpException(
-        'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Wrong credentials provided',
+        HttpStatus.BAD_REQUEST,
       );
     }
   }
 
-  getCookieWithJwtToken(userUuid: string) {
-    const payload: TokenPayload = { userUuid };
+  public getCookieWithJwtToken(email: string) {
+    const payload: TokenPayload = { email };
     const token = this.jwtService.sign(payload);
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
       'JWT_EXPIRATION_TIME',
     )}`;
   }
 
-  getCookieForLogOut() {
+  public getCookieForLogOut() {
     return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
   }
 }

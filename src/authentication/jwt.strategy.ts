@@ -10,7 +10,7 @@ import { TokenPayload } from './token-payload.interface';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private readonly configService: ConfigService,
-    private readonly userService: UsersService,
+    private readonly usersService: UsersService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -23,6 +23,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: TokenPayload) {
-    return this.userService.getByUuid(payload.userUuid);
+    return this.usersService.getByEmail(payload.email);
   }
 }
