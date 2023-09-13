@@ -1,9 +1,6 @@
 import { DataSource } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
-import PostEntity from './src/posts/post.entity';
-import { CreatePost1694278074912 } from './migrations/1694278074912-CreatePost';
-import { PostCreationDate1694325562019 } from './migrations/1694325562019-PostCreationDate';
 
 config();
 
@@ -16,6 +13,6 @@ export default new DataSource({
   username: configService.get('POSTGRES_USER'),
   password: configService.get('POSTGRES_PASSWORD'),
   database: configService.get('POSTGRES_DB'),
-  entities: [PostEntity],
-  migrations: [CreatePost1694278074912, PostCreationDate1694325562019],
+  entities: ['src/**/*.entity{.ts,.js}'],
+  migrations: ['migrations/*{.ts,.js}'],
 });
