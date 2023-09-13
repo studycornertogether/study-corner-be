@@ -6,11 +6,13 @@ import {
   Body,
   Req,
 } from '@nestjs/common';
-import { TokenVerificationDto } from './tokenVerificationDto';
+import { TokenVerificationDto } from './tokenVerification.dto';
 import { GoogleAuthenticationService } from './googleAuthentication.service';
 import { Request } from 'express';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('google-authentication')
+@ApiTags('authentication')
 @UseInterceptors(ClassSerializerInterceptor)
 export class GoogleAuthenticationController {
   constructor(
@@ -18,6 +20,7 @@ export class GoogleAuthenticationController {
   ) {}
 
   @Post()
+  @ApiBody({ type: TokenVerificationDto })
   async authenticate(
     @Body() tokenData: TokenVerificationDto,
     @Req() request: Request,
