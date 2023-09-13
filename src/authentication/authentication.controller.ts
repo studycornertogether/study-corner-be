@@ -11,18 +11,12 @@ import {
 import { AuthenticationService } from './authentication.service';
 import JwtAuthenticationGuard from './jwt-authentication.guard';
 import RequestWithUser from './requestWithUser.interface';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('authentication')
+@ApiTags('authentication')
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
-
-  @HttpCode(200)
-  @Post('log-in')
-  async logIn(@Body('email') email: string, @Res() response: any) {
-    const cookie = this.authenticationService.getCookieWithJwtToken(email);
-    response.setHeader('Set-Cookie', cookie);
-    return response.send('Login successfully.');
-  }
 
   @UseGuards(JwtAuthenticationGuard)
   @Post('log-out')
