@@ -35,9 +35,11 @@ $ npm install
 ## Running the app
 
 ```bash
-# development
+# run this first
 $ docker volume create pgdata
 $ docker compose up
+
+# development
 $ npm run start
 
 # watch mode
