@@ -13,7 +13,6 @@ import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('google-authentication')
 @ApiTags('authentication')
-@UseInterceptors(ClassSerializerInterceptor)
 export class GoogleAuthenticationController {
   constructor(
     private readonly googleAuthenticationService: GoogleAuthenticationService,
@@ -26,7 +25,10 @@ export class GoogleAuthenticationController {
     @Req() request: Request,
   ) {
     const { accessTokenCookie, user } =
-      await this.googleAuthenticationService.authenticate(tokenData.token);
+      await this.googleAuthenticationService.authenticate(
+        tokenData.token,
+        tokenData.referralCode,
+      );
     request.res.setHeader('Set-Cookie', accessTokenCookie);
     return user;
   }

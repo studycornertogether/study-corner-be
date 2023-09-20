@@ -19,25 +19,19 @@ export class GoogleAuthenticationService {
     this.oauthClient = new google.auth.OAuth2(clientID, clientSecret);
   }
 
-  async authenticate(token: string) {
-    const tokenInfo = await this.oauthClient.getTokenInfo(token);
-    const email = tokenInfo.email;
-
-    try {
-      return await this.registerUser(token, email);
-    } catch (error) {
-      if (error.status !== 404) {
-        throw new error();
-      }
-    }
-  }
-
-  async registerUser(token: string, email: string) {
+  async authenticate(token: string, referralCode: string) {
     const userData = await this.getUserData(token);
     const name = userData.name;
+    const email = userData.email;
     let user = await this.usersService.getByEmail(email);
     if (!user) {
       user = await this.usersService.createWithGoogle(email, name);
+    }
+
+    try {
+      await this.usersService.inputReferralCode(user, { referralCode });
+    } catch (error) {
+      console.error(error);
     }
 
     const { accessTokenCookie } = await this.getCookiesForUser(user);
