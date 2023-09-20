@@ -1,0 +1,54 @@
+import { Test } from '@nestjs/testing';
+import { UsersService } from '../users.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from '../user.entity';
+import { UserReferral } from '../user-referal.entity';
+
+describe('The UsersService', () => {
+  let usersService: UsersService;
+  let findOne: jest.Mock;
+  beforeEach(async () => {
+    findOne = jest.fn();
+    const module = await Test.createTestingModule({
+      providers: [
+        UsersService,
+        {
+          provide: getRepositoryToken(User),
+          useValue: {
+            findOne,
+          },
+        },
+        {
+          provide: getRepositoryToken(UserReferral),
+          useValue: {},
+        },
+      ],
+    }).compile();
+    usersService = await module.get(UsersService);
+  });
+  describe('when getting a user by email', () => {
+    describe('and the user is matched', () => {
+      let user: User;
+      beforeEach(() => {
+        user = new User();
+        findOne.mockReturnValue(Promise.resolve(user));
+      });
+      it('shoud return the user', async () => {
+        const fetchedUser = await usersService.getByEmail(
+          'studycornertogether@gmail.com',
+        );
+        expect(fetchedUser).toEqual(user);
+      });
+      describe('and the user is not matched', () => {
+        beforeEach(() => {
+          findOne.mockReturnValue(undefined);
+        });
+        it('should throw an error', async () => {
+          await expect(
+            usersService.getByEmail('test@test.com'),
+          ).rejects.toThrow();
+        });
+      });
+    });
+  });
+});

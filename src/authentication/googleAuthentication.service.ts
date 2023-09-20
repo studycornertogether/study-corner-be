@@ -31,7 +31,7 @@ export class GoogleAuthenticationService {
     try {
       await this.usersService.inputReferralCode(user, { referralCode });
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
 
     const { accessTokenCookie } = await this.getCookiesForUser(user);
