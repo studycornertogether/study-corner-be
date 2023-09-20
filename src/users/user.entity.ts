@@ -27,7 +27,7 @@ export class User {
   name: string;
 
   @Column({ name: 'date_of_birth', nullable: true, type: 'timestamptz' })
-  @Transform((value) => {
+  @Transform(({ value }) => {
     if (value !== null) {
       return value;
     }
