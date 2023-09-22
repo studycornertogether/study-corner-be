@@ -9,10 +9,12 @@ import { mockedConfigService } from '../../utils/mocks/config.service';
 import { mockedJwtService } from '../../utils/mocks/jwt.service';
 import { UserReferral } from '../../users/user-referal.entity';
 import { mockedUser } from './user.mock';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { AuthenticationController } from '../authentication.controller';
+import * as request from 'supertest';
 
 describe('The AuthenticationService', () => {
-  let authenticationService: AuthenticationService;
-  let usersService: UsersService;
+  let app: INestApplication;
   let userData: User;
   let findUser: jest.Mock;
   beforeEach(async () => {
@@ -22,8 +24,11 @@ describe('The AuthenticationService', () => {
     findUser = jest.fn().mockResolvedValue(userData);
     const usersRepository = {
       findOne: findUser,
+      create: jest.fn().mockResolvedValue(userData),
+      save: jest.fn().mockReturnValue(Promise.resolve()),
     };
     const module = await Test.createTestingModule({
+      controllers: [AuthenticationController],
       providers: [
         UsersService,
         AuthenticationService,
@@ -45,37 +50,24 @@ describe('The AuthenticationService', () => {
         },
       ],
     }).compile();
-    authenticationService = await module.get(AuthenticationService);
-    usersService = await module.get(UsersService);
+    app = module.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
+    await app.init();
   });
-  describe('when creating a cookie', () => {
-    it('should return a string', () => {
-      const email = 'abc';
-      expect(typeof authenticationService.getCookieWithJwtToken(email)).toEqual(
-        'string',
-      );
-    });
-  });
-  describe('when accessing the data of authenticating user', () => {
-    describe('and the user is found in the database', () => {
-      beforeEach(() => {
-        findUser.mockResolvedValue(userData);
-      });
-      it('should return the user data', async () => {
-        const user = await authenticationService.getAuthenticatedUser(
-          'user@email.com',
-        );
-        expect(user).toBe(userData);
-      });
-    });
-    describe('and the user is not found in the database', () => {
-      beforeEach(() => {
-        findUser.mockResolvedValue(undefined);
-      });
-      it('should throw an error', async () => {
-        await expect(
-          authenticationService.getAuthenticatedUser('user@email.com'),
-        ).rejects.toThrow();
+  describe('when registering', () => {
+    describe('and using valid data', () => {
+      it('should respond with the data of the user', () => {
+        const expectedData = {
+          ...userData,
+        };
+        return request(app.getHttpServer())
+          .post('/google-authentication')
+          .send({
+            token:
+              'ya29.a0AfB_byDDIu98iekK-bOtcsv0ReiDvKPexHhY0VR1MNQm7cBFogTXeMeUNp5JINWwYT-oV_pGUIhG09xGnB7podFk2Vw0Ma0HtkfViv0icmnGromillBI7JIMD0blZZT9WpuJeS8C2wn6qnUOFfjeYD68TY4hWV2Ej50aCgYKAeMSARASFQGOcNnCbypxzuhAHqR89q2iI_y-AQ0170',
+          })
+          .expect(201)
+          .expect(expectedData);
       });
     });
   });
