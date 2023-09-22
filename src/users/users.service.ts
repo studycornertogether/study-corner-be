@@ -21,13 +21,7 @@ export class UsersService {
 
   async getByEmail(email: string) {
     const user = await this.usersRepository.findOne({ where: { email } });
-    if (user) {
-      return user;
-    }
-    throw new HttpException(
-      'User with this email does not exist',
-      HttpStatus.NOT_FOUND,
-    );
+    return user;
   }
 
   async getByReferralCode(referralCode: string) {
@@ -37,11 +31,12 @@ export class UsersService {
     return user;
   }
 
-  async createWithGoogle(email: string, name: string) {
+  async createWithGoogle(email: string, name: string, avatar: string) {
     const [referralCode] = VoucherCodes.generate({ count: 1, length: 10 });
     const newUser = await this.usersRepository.create({
       email,
       name,
+      avatar,
       referralCode,
     });
     await this.usersRepository.save(newUser);

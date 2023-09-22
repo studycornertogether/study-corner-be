@@ -23,9 +23,10 @@ export class GoogleAuthenticationService {
     const userData = await this.getUserData(token);
     const name = userData.name;
     const email = userData.email;
+    const avatar = userData.picture;
     let user = await this.usersService.getByEmail(email);
     if (!user) {
-      user = await this.usersService.createWithGoogle(email, name);
+      user = await this.usersService.createWithGoogle(email, name, avatar);
     }
 
     try {
