@@ -8,10 +8,21 @@ import { UsersService } from '../../users/users.service';
 import { mockedConfigService } from '../../utils/mocks/config.service';
 import { mockedJwtService } from '../../utils/mocks/jwt.service';
 import { UserReferral } from '../../users/user-referal.entity';
+import { mockedUser } from './user.mock';
 
 describe('The AuthenticationService', () => {
   let authenticationService: AuthenticationService;
+  let usersService: UsersService;
+  let userData: User;
+  let findUser: jest.Mock;
   beforeEach(async () => {
+    userData = {
+      ...mockedUser,
+    };
+    findUser = jest.fn().mockResolvedValue(userData);
+    const usersRepository = {
+      findOne: findUser,
+    };
     const module = await Test.createTestingModule({
       providers: [
         UsersService,
@@ -26,7 +37,7 @@ describe('The AuthenticationService', () => {
         },
         {
           provide: getRepositoryToken(User),
-          useValue: {},
+          useValue: usersRepository,
         },
         {
           provide: getRepositoryToken(UserReferral),
@@ -35,6 +46,7 @@ describe('The AuthenticationService', () => {
       ],
     }).compile();
     authenticationService = await module.get(AuthenticationService);
+    usersService = await module.get(UsersService);
   });
   describe('when creating a cookie', () => {
     it('should return a string', () => {
@@ -42,6 +54,29 @@ describe('The AuthenticationService', () => {
       expect(typeof authenticationService.getCookieWithJwtToken(email)).toEqual(
         'string',
       );
+    });
+  });
+  describe('when accessing the data of authenticating user', () => {
+    describe('and the user is found in the database', () => {
+      beforeEach(() => {
+        findUser.mockResolvedValue(userData);
+      });
+      it('should return the user data', async () => {
+        const user = await authenticationService.getAuthenticatedUser(
+          'user@email.com',
+        );
+        expect(user).toBe(userData);
+      });
+    });
+    describe('and the user is not found in the database', () => {
+      beforeEach(() => {
+        findUser.mockResolvedValue(undefined);
+      });
+      it('should throw an error', async () => {
+        await expect(
+          authenticationService.getAuthenticatedUser('user@email.com'),
+        ).rejects.toThrow();
+      });
     });
   });
 });

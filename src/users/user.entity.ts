@@ -48,5 +48,5 @@ export class User {
     () => UserReferral,
     (userReferral: UserReferral) => userReferral.referrerId,
   )
-  referringBy: UserReferral;
+  referringBy?: UserReferral;
 }

@@ -12,7 +12,7 @@ export class AuthenticationService {
     private readonly configService: ConfigService,
   ) {}
 
-  public async getAuthenticatedUser(email: string, hashedPassword: string) {
+  public async getAuthenticatedUser(email: string) {
     try {
       const user = await this.usersService.getByEmail(email);
       return user;
