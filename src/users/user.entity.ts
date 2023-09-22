@@ -34,6 +34,9 @@ export class User {
   })
   dateOfBirth?: Date;
 
+  @Column({ name: 'avatar', nullable: true })
+  avatar?: string;
+
   @Column({ name: 'referral_code', unique: true })
   referralCode: string;
 
@@ -48,5 +51,5 @@ export class User {
     () => UserReferral,
     (userReferral: UserReferral) => userReferral.referrerId,
   )
-  referringBy: UserReferral;
+  referringBy?: UserReferral;
 }

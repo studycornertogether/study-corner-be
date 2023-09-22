@@ -31,11 +31,12 @@ export class UsersService {
     return user;
   }
 
-  async createWithGoogle(email: string, name: string) {
+  async createWithGoogle(email: string, name: string, avatar: string) {
     const [referralCode] = VoucherCodes.generate({ count: 1, length: 10 });
     const newUser = await this.usersRepository.create({
       email,
       name,
+      avatar,
       referralCode,
     });
     await this.usersRepository.save(newUser);

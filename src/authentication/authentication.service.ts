@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service';
 import { TokenPayload } from './token-payload.interface';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class AuthenticationService {
     private readonly configService: ConfigService,
   ) {}
 
-  public async getAuthenticatedUser(email: string, hashedPassword: string) {
+  public async getAuthenticatedUser(email: string) {
     try {
       const user = await this.usersService.getByEmail(email);
       return user;

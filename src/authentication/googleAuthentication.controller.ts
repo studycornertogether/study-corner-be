@@ -30,6 +30,6 @@ export class GoogleAuthenticationController {
         tokenData.referralCode,
       );
     request.res.setHeader('Set-Cookie', accessTokenCookie);
-    return user;
+    return { message: 'Login success', result: user };
   }
 }

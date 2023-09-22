@@ -25,13 +25,13 @@ export class AuthenticationController {
       'Set-Cookie',
       this.authenticationService.getCookieForLogOut(),
     );
-    return response.sendStatus(200);
+    return response.status(200).send({ message: 'Logout OK.' });
   }
 
   @UseGuards(JwtAuthenticationGuard)
   @Get()
   authenticate(@Req() request: RequestWithUser) {
     const user = request.user;
-    return user;
+    return { message: 'Get user information success.', result: user };
   }
 }

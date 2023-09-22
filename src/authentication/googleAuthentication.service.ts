@@ -23,15 +23,16 @@ export class GoogleAuthenticationService {
     const userData = await this.getUserData(token);
     const name = userData.name;
     const email = userData.email;
+    const avatar = userData.picture;
     let user = await this.usersService.getByEmail(email);
     if (!user) {
-      user = await this.usersService.createWithGoogle(email, name);
+      user = await this.usersService.createWithGoogle(email, name, avatar);
     }
 
     try {
       await this.usersService.inputReferralCode(user, { referralCode });
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
 
     const { accessTokenCookie } = await this.getCookiesForUser(user);
