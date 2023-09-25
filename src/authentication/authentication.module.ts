@@ -7,23 +7,16 @@ import { JwtStrategy } from './jwt.strategy';
 import { GoogleAuthenticationService } from './googleAuthentication.service';
 import { GoogleAuthenticationController } from './googleAuthentication.controller';
 import { AuthenticationController } from './authentication.controller';
+import { JwtRefreshTokenStrategy } from './jwt-refresh-token.strategy';
 
 @Module({
-  imports: [
-    UsersModule,
-    ConfigModule,
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('JWT_SECRET'),
-        signOptions: {
-          expiresIn: `${configService.get('JWT_EXPIRATION_TIME')}`,
-        },
-      }),
-    }),
+  imports: [UsersModule, ConfigModule, JwtModule.register({})],
+  providers: [
+    AuthenticationService,
+    JwtStrategy,
+    GoogleAuthenticationService,
+    JwtRefreshTokenStrategy,
   ],
-  providers: [AuthenticationService, JwtStrategy, GoogleAuthenticationService],
   controllers: [GoogleAuthenticationController, AuthenticationController],
 })
 export class AuthenticationModule {}
