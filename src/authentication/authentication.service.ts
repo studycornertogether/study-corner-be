@@ -26,13 +26,34 @@ export class AuthenticationService {
 
   public getCookieWithJwtToken(email: string) {
     const payload: TokenPayload = { email };
-    const token = this.jwtService.sign(payload);
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_SECRET'),
+      expiresIn: `${this.configService.get('JWT_EXPIRATION_TIME')}s`,
+    });
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
       'JWT_EXPIRATION_TIME',
     )}`;
   }
 
+  getCookieWithJwtRefreshToken(email: string) {
+    const payload: TokenPayload = { email };
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_REFRESH_SECRET'),
+      expiresIn: `${this.configService.get('JWT_REFRESH_EXPIRATION_TIME')}s`,
+    });
+    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+      'JWT_REFRESH_EXPIRATION_TIME',
+    )}`;
+    return {
+      cookie,
+      token,
+    };
+  }
+
   public getCookieForLogOut() {
-    return `Authentication=; HttpOnly; Path=/; Max-Age=0`;
+    return [
+      `Authentication=; HttpOnly; Path=/; Max-Age=0`,
+      'Refresh=; HttpOnly; Path=/; Max-Age=0',
+    ];
   }
 }

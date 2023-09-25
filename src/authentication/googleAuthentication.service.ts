@@ -35,9 +35,11 @@ export class GoogleAuthenticationService {
       console.warn(error);
     }
 
-    const { accessTokenCookie } = await this.getCookiesForUser(user);
+    const { accessTokenCookie, refreshTokenCookie } =
+      await this.getCookiesForUser(user);
     return {
       accessTokenCookie,
+      refreshTokenCookie,
       user,
     };
   }
@@ -60,9 +62,12 @@ export class GoogleAuthenticationService {
     const accessTokenCookie = this.authenticationService.getCookieWithJwtToken(
       user.email,
     );
+    const refreshTokenCookie =
+      this.authenticationService.getCookieWithJwtRefreshToken(user.email);
 
     return {
       accessTokenCookie,
+      refreshTokenCookie,
     };
   }
 }
