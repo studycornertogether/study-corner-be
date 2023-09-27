@@ -8,4 +8,5 @@ export const mockedUser: User = {
   updatedDate: new Date(),
   uuid: 'ABC1234125',
   referralCode: 'ABC123123',
+  planets: [],
 };

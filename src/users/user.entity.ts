@@ -5,11 +5,13 @@ import {
   Entity,
   Generated,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserReferral } from './user-referal.entity';
+import { Planet } from '../planets/planet.entity';
 
 @Entity()
 export class User {
@@ -47,9 +49,13 @@ export class User {
   @Exclude()
   updatedDate: Date;
 
+  // Relationships
   @OneToOne(
     () => UserReferral,
     (userReferral: UserReferral) => userReferral.referrerId,
   )
   referringBy?: UserReferral;
+
+  @OneToMany(() => Planet, (planet: Planet) => planet.user)
+  planets: Planet[];
 }
