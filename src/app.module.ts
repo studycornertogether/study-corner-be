@@ -7,6 +7,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionsLoggerFilter } from './utils/exceptionsLogger.filter';
 import { PlanetsModule } from './planets/planets.module';
+import { PomodoroModule } from './pomodoro/pomodoro.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { PlanetsModule } from './planets/planets.module';
     UsersModule,
     AuthenticationModule,
     PlanetsModule,
+    PomodoroModule,
   ],
   controllers: [],
   providers: [{ provide: APP_FILTER, useClass: ExceptionsLoggerFilter }],
