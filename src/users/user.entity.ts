@@ -61,11 +61,8 @@ export class User {
   @OneToMany(() => Planet, (planet: Planet) => planet.user)
   planets: Planet[];
 
-  @OneToMany(
-    () => PomodoroHistory,
-    (pomodoroHistory: PomodoroHistory) => pomodoroHistory.user,
-  )
-  pomodoroHistory: PomodoroHistory[];
+  @OneToMany(() => PomodoroHistory, (pomodoroHistory) => pomodoroHistory.user)
+  pomodoroHistories: PomodoroHistory[];
 
   @OneToOne(
     () => PomodoroSetting,

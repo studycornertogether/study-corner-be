@@ -29,7 +29,7 @@ export class PomodoroSetting {
   numberOfSessions: number;
 
   // Relationships
-  @OneToOne(() => User, (user: User) => user.planets)
+  @OneToOne(() => User, (user: User) => user.pomodoroSetting)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 }

@@ -9,7 +9,7 @@ import { PomodoroSessionType } from '../enum/pomodoro-session-type.enum';
 import { PomodoroSessionStatus } from '../enum/pomodoro-session-status.enum';
 import { User } from '../users/user.entity';
 
-@Entity()
+@Entity({ name: 'pomodoro_history' })
 export class PomodoroHistory {
   @PrimaryGeneratedColumn()
   id: number;
@@ -39,7 +39,7 @@ export class PomodoroHistory {
   timeRemain: number;
 
   // Relationships
-  @ManyToOne(() => User, (user: User) => user.planets)
+  @ManyToOne(() => User, (user: User) => user.pomodoroHistories)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 }

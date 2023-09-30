@@ -1,4 +1,29 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
+import { PomodoroService } from './pomodoro.service';
+import { UpsertSettingDTO } from './dto/upsert-setting.dto';
+import RequestWithUser from '../authentication/requestWithUser.interface';
+import JwtAuthenticationGuard from '../authentication/jwt-authentication.guard';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('pomodoro')
-export class PomodoroController {}
+@ApiTags('pomodoro')
+@UseGuards(JwtAuthenticationGuard)
+export class PomodoroController {
+  constructor(private readonly pomodoroService: PomodoroService) {}
+
+  @Put('setting')
+  upsertSetting(
+    @Body() data: UpsertSettingDTO,
+    @Req() request: RequestWithUser,
+  ) {
+    const { user } = request;
+    data.user = user;
+    return this.pomodoroService.upsertSetting(data);
+  }
+
+  @Get('setting')
+  getSetting(@Req() request: RequestWithUser) {
+    const { user } = request;
+    return this.pomodoroService.getSetting(user);
+  }
+}

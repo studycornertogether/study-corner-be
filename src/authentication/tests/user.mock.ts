@@ -9,4 +9,6 @@ export const mockedUser: User = {
   uuid: 'ABC1234125',
   referralCode: 'ABC123123',
   planets: [],
+  pomodoroHistories: [],
+  pomodoroSetting: null,
 };
