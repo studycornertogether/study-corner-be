@@ -24,10 +24,15 @@ async function bootstrap() {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Study Corner Project API')
     .setDescription('API developed throughout the API with NestJS course')
-    .setVersion('1.0')
+    .setVersion('alpha')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api', app, document, {
+    swaggerOptions: {
+      tagsSorter: 'alpha',
+      operationsSorter: 'alpha',
+    },
+  });
 
   await app.listen(8080);
 }
