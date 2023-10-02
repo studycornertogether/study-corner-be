@@ -12,6 +12,8 @@ import {
 } from 'typeorm';
 import { UserReferral } from './user-referal.entity';
 import { Planet } from '../planets/planet.entity';
+import { PomodoroHistory } from '../pomodoro/pomodoro-history.entity';
+import { PomodoroSetting } from '../pomodoro/pomodoro-setting.entity';
 
 @Entity()
 export class User {
@@ -58,4 +60,13 @@ export class User {
 
   @OneToMany(() => Planet, (planet: Planet) => planet.user)
   planets: Planet[];
+
+  @OneToMany(() => PomodoroHistory, (pomodoroHistory) => pomodoroHistory.user)
+  pomodoroHistories: PomodoroHistory[];
+
+  @OneToOne(
+    () => PomodoroSetting,
+    (pomodoroSetting: PomodoroSetting) => pomodoroSetting.user,
+  )
+  pomodoroSetting: PomodoroSetting;
 }
