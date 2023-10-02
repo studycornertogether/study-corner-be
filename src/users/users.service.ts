@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import * as VoucherCodes from 'voucher-code-generator';
 import { InputReferralCodeDTO } from './dto/input-referral-code.dto';
 import { UserReferral } from './user-referal.entity';
+import { PomodoroService } from '../pomodoro/pomodoro.service';
 @Injectable()
 export class UsersService {
   constructor(
@@ -17,6 +18,7 @@ export class UsersService {
     private usersRepository: Repository<User>,
     @InjectRepository(UserReferral)
     private userReferralRepository: Repository<UserReferral>,
+    private readonly pomodoroService: PomodoroService,
   ) {}
 
   async getByEmail(email: string) {
@@ -31,15 +33,23 @@ export class UsersService {
     return user;
   }
 
-  async createWithGoogle(email: string, name: string) {
+  async createWithGoogle(email: string, name: string, avatar: string) {
     const [referralCode] = VoucherCodes.generate({ count: 1, length: 10 });
     const newUser = await this.usersRepository.create({
       email,
       name,
+      avatar,
       referralCode,
     });
-    await this.usersRepository.save(newUser);
-    return newUser;
+    const user = await this.usersRepository.save(newUser);
+    await this.pomodoroService.upsertSetting({
+      user,
+      focusTime: 25,
+      shortBreakTime: 5,
+      longBreakTime: 15,
+      numberOfSessions: 4,
+    });
+    return user;
   }
 
   async inputReferralCode(user: User, data: InputReferralCodeDTO) {

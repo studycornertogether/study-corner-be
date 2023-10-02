@@ -1,9 +1,9 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { InputReferralCodeDTO } from './dto/input-referral-code.dto';
-import JwtAuthenticationGuard from 'src/authentication/jwt-authentication.guard';
-import RequestWithUser from 'src/authentication/requestWithUser.interface';
 import { ApiTags } from '@nestjs/swagger';
+import RequestWithUser from '../authentication/requestWithUser.interface';
+import JwtAuthenticationGuard from '../authentication/jwt-authentication.guard';
 
 @Controller('users')
 @ApiTags('users')

@@ -38,6 +38,7 @@ $ npm install
 # run this first
 $ docker volume create pgdata
 $ docker compose up
+$ npm run migrations-run
 
 # development
 $ npm run start

@@ -5,11 +5,15 @@ import {
   Entity,
   Generated,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserReferral } from './user-referal.entity';
+import { Planet } from '../planets/planet.entity';
+import { PomodoroHistory } from '../pomodoro/pomodoro-history.entity';
+import { PomodoroSetting } from '../pomodoro/pomodoro-setting.entity';
 
 @Entity()
 export class User {
@@ -27,12 +31,15 @@ export class User {
   name: string;
 
   @Column({ name: 'date_of_birth', nullable: true, type: 'timestamptz' })
-  @Transform((value) => {
+  @Transform(({ value }) => {
     if (value !== null) {
       return value;
     }
   })
   dateOfBirth?: Date;
+
+  @Column({ name: 'avatar', nullable: true })
+  avatar?: string;
 
   @Column({ name: 'referral_code', unique: true })
   referralCode: string;
@@ -44,9 +51,22 @@ export class User {
   @Exclude()
   updatedDate: Date;
 
+  // Relationships
   @OneToOne(
     () => UserReferral,
     (userReferral: UserReferral) => userReferral.referrerId,
   )
-  referringBy: UserReferral;
+  referringBy?: UserReferral;
+
+  @OneToMany(() => Planet, (planet: Planet) => planet.user)
+  planets: Planet[];
+
+  @OneToMany(() => PomodoroHistory, (pomodoroHistory) => pomodoroHistory.user)
+  pomodoroHistories: PomodoroHistory[];
+
+  @OneToOne(
+    () => PomodoroSetting,
+    (pomodoroSetting: PomodoroSetting) => pomodoroSetting.user,
+  )
+  pomodoroSetting: PomodoroSetting;
 }

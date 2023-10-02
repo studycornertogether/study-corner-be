@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Post,
-  ClassSerializerInterceptor,
-  UseInterceptors,
-  Body,
-  Req,
-} from '@nestjs/common';
+import { Controller, Post, Body, Req, Get, UseGuards } from '@nestjs/common';
 import { TokenVerificationDto } from './tokenVerification.dto';
 import { GoogleAuthenticationService } from './googleAuthentication.service';
 import { Request } from 'express';
@@ -24,12 +17,15 @@ export class GoogleAuthenticationController {
     @Body() tokenData: TokenVerificationDto,
     @Req() request: Request,
   ) {
-    const { accessTokenCookie, user } =
+    const { accessTokenCookie, refreshTokenCookie, user } =
       await this.googleAuthenticationService.authenticate(
         tokenData.token,
         tokenData.referralCode,
       );
-    request.res.setHeader('Set-Cookie', accessTokenCookie);
-    return user;
+    request.res.setHeader('Set-Cookie', [
+      accessTokenCookie,
+      refreshTokenCookie.cookie,
+    ]);
+    return { message: 'Login successfully', result: user };
   }
 }

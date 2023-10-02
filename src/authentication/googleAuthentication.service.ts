@@ -23,20 +23,23 @@ export class GoogleAuthenticationService {
     const userData = await this.getUserData(token);
     const name = userData.name;
     const email = userData.email;
+    const avatar = userData.picture;
     let user = await this.usersService.getByEmail(email);
     if (!user) {
-      user = await this.usersService.createWithGoogle(email, name);
+      user = await this.usersService.createWithGoogle(email, name, avatar);
     }
 
     try {
       await this.usersService.inputReferralCode(user, { referralCode });
     } catch (error) {
-      console.error(error);
+      console.warn(error);
     }
 
-    const { accessTokenCookie } = await this.getCookiesForUser(user);
+    const { accessTokenCookie, refreshTokenCookie } =
+      await this.getCookiesForUser(user);
     return {
       accessTokenCookie,
+      refreshTokenCookie,
       user,
     };
   }
@@ -59,9 +62,12 @@ export class GoogleAuthenticationService {
     const accessTokenCookie = this.authenticationService.getCookieWithJwtToken(
       user.email,
     );
+    const refreshTokenCookie =
+      this.authenticationService.getCookieWithJwtRefreshToken(user.email);
 
     return {
       accessTokenCookie,
+      refreshTokenCookie,
     };
   }
 }
