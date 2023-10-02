@@ -43,7 +43,12 @@ export class AuthenticationController {
     const accessTokenCookie = this.authenticationService.getCookieWithJwtToken(
       user.email,
     );
-    request.res.setHeader('Set-Cookie', accessTokenCookie);
+    const refreshTokenCookie =
+      this.authenticationService.getCookieWithJwtRefreshToken(user.email);
+    request.res.setHeader('Set-Cookie', [
+      accessTokenCookie,
+      refreshTokenCookie,
+    ]);
     return { message: 'Refresh successfully' };
   }
 }
