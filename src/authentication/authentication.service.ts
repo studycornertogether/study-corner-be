@@ -44,10 +44,7 @@ export class AuthenticationService {
     const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
       'JWT_REFRESH_EXPIRATION_TIME',
     )}`;
-    return {
-      cookie,
-      token,
-    };
+    return cookie;
   }
 
   public getCookieForLogOut() {

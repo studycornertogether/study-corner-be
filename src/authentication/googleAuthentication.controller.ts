@@ -24,7 +24,7 @@ export class GoogleAuthenticationController {
       );
     request.res.setHeader('Set-Cookie', [
       accessTokenCookie,
-      refreshTokenCookie.cookie,
+      refreshTokenCookie,
     ]);
     return { message: 'Login successfully', result: user };
   }
