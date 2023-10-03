@@ -30,7 +30,10 @@ export class GoogleAuthenticationService {
     }
 
     try {
-      await this.usersService.inputReferralCode(user, { referralCode });
+      await Promise.all([
+        this.usersService.inputReferralCode(user, { referralCode }),
+        this.usersService.upsertPomodoroSetting(user),
+      ]);
     } catch (error) {
       console.warn(error);
     }
