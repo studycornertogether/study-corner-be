@@ -1,5 +1,5 @@
 export enum PomodoroSessionStatus {
-  RUNNING = 'RUNNING',
+  STARTED = 'STARTED',
   PAUSED = 'PAUSED',
   SKIPPED = 'SKIPPED',
   STOPPED = 'STOPPED',

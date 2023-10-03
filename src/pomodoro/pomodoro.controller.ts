@@ -1,9 +1,18 @@
-import { Body, Controller, Get, Put, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { PomodoroService } from './pomodoro.service';
 import { UpsertSettingDTO } from './dto/upsert-setting.dto';
 import RequestWithUser from '../authentication/requestWithUser.interface';
 import JwtAuthenticationGuard from '../authentication/jwt-authentication.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { InsertHistoryDTO } from './dto/insert-history.dto';
 
 @Controller('pomodoro')
 @ApiTags('pomodoro')
@@ -25,5 +34,19 @@ export class PomodoroController {
   getSetting(@Req() request: RequestWithUser) {
     const { user } = request;
     return this.pomodoroService.getSetting(user);
+  }
+
+  @Post('history')
+  insertHistory(
+    @Body() data: InsertHistoryDTO,
+    @Req() request: RequestWithUser,
+  ) {
+    data.user = request['user'];
+    return this.pomodoroService.insertHistory(data);
+  }
+
+  @Get('last-history')
+  getLastHistory(@Req() request: RequestWithUser) {
+    return this.pomodoroService.getLastHistory(request.user);
   }
 }
