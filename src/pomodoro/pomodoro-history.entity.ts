@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -17,12 +18,6 @@ export class PomodoroHistory {
   @Column({ name: 'user_id' })
   userId: number;
 
-  @Column({ name: 'time_start', type: 'timestamptz' })
-  timeStart: Date;
-
-  @Column({ name: 'time_stop', type: 'timestamptz' })
-  timeStop: Date;
-
   @Column({ name: 'focus_time', type: 'int4' })
   focusTime: number;
 
@@ -35,8 +30,11 @@ export class PomodoroHistory {
   @Column({ name: 'status', enum: PomodoroSessionStatus })
   status: PomodoroSessionStatus;
 
-  @Column({ name: 'time_remain', type: 'int4' })
-  timeRemain: number;
+  @Column({ name: 'time_remain', type: 'varchar', nullable: true })
+  timeRemain?: string;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
 
   // Relationships
   @ManyToOne(() => User, (user: User) => user.pomodoroHistories)

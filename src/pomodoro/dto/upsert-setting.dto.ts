@@ -26,4 +26,9 @@ export class UpsertSettingDTO {
   @IsNumber()
   @IsNotEmpty()
   numberOfSessions?: number = 4;
+
+  @Transform(({ value }) => parseInt(value))
+  @IsNumber()
+  @IsNotEmpty()
+  longBreakInterval?: number = 4;
 }

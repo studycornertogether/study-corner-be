@@ -42,13 +42,6 @@ export class UsersService {
       referralCode,
     });
     const user = await this.usersRepository.save(newUser);
-    await this.pomodoroService.upsertSetting({
-      user,
-      focusTime: 25,
-      shortBreakTime: 5,
-      longBreakTime: 15,
-      numberOfSessions: 4,
-    });
     return user;
   }
 
@@ -83,5 +76,19 @@ export class UsersService {
       referrerId: referrer.id,
     });
     return { message: 'Input referralCode successfully.' };
+  }
+
+  async upsertPomodoroSetting(user: User) {
+    const existsSetting = (await this.pomodoroService.getSetting(user)).result;
+    if (!existsSetting) {
+      this.pomodoroService.upsertSetting({
+        user,
+        focusTime: 25,
+        shortBreakTime: 5,
+        longBreakTime: 15,
+        numberOfSessions: 4,
+        longBreakInterval: 4,
+      });
+    }
   }
 }

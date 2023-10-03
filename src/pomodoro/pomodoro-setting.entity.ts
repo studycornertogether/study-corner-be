@@ -28,6 +28,9 @@ export class PomodoroSetting {
   @Column({ name: 'number_of_sessions', type: 'int4' })
   numberOfSessions: number;
 
+  @Column({ name: 'long_break_interval', type: 'int4', default: 4 })
+  longBreakInterval: number;
+
   // Relationships
   @OneToOne(() => User, (user: User) => user.pomodoroSetting)
   @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
