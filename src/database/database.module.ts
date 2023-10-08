@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PomodoroHistory } from './pomodoro/pomodoro-history.entity';
 
 @Module({
   imports: [
@@ -15,7 +14,7 @@ import { PomodoroHistory } from './pomodoro/pomodoro-history.entity';
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
-        entities: [__dirname + '/**/*.entity.{js,ts}'],
+        entities: [__dirname + '/../**/*.entity.{js,ts}'],
         synchronize: false,
       }),
     }),
