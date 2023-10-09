@@ -79,7 +79,7 @@ export class UsersService {
   }
 
   async upsertPomodoroSetting(user: User) {
-    const existsSetting = (await this.pomodoroService.getSetting(user)).result;
+    const existsSetting = await this.pomodoroService.getSetting(user);
     if (!existsSetting) {
       this.pomodoroService.upsertSetting({
         user,

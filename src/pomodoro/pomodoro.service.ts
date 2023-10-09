@@ -34,7 +34,7 @@ export class PomodoroService {
     const result = await this.pomodoroSettingRepository.findOne({
       where: { userId: user.id },
     });
-    return { result };
+    return result;
   }
 
   async insertHistory(insertHistoryDTO: InsertHistoryDTO) {
@@ -60,6 +60,12 @@ export class PomodoroService {
       where: { userId: user.id },
       order: { createdAt: 'DESC' },
     });
-    return { result };
+    return result;
+  }
+
+  async getLastActivity(user: User) {
+    const setting = await this.getSetting(user);
+    const history = await this.getLastHistory(user);
+    return { result: { setting, history } };
   }
 }

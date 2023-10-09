@@ -30,12 +30,6 @@ export class PomodoroController {
     return this.pomodoroService.upsertSetting(data);
   }
 
-  @Get('setting')
-  getSetting(@Req() request: RequestWithUser) {
-    const { user } = request;
-    return this.pomodoroService.getSetting(user);
-  }
-
   @Post('history')
   insertHistory(
     @Body() data: InsertHistoryDTO,
@@ -45,8 +39,8 @@ export class PomodoroController {
     return this.pomodoroService.insertHistory(data);
   }
 
-  @Get('last-history')
+  @Get('last-activity')
   getLastHistory(@Req() request: RequestWithUser) {
-    return this.pomodoroService.getLastHistory(request.user);
+    return this.pomodoroService.getLastActivity(request.user);
   }
 }
